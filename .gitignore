@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio
+/.vs/NodeBasedImageManipulation
+/NodeBasedImageManipulation/x64/Debug
+/x64/Debug
