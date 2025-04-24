@@ -176,6 +176,7 @@
     <ClInclude Include="deps\imgui\imstb_textedit.h" />
     <ClInclude Include="deps\imgui\imstb_truetype.h" />
     <ClInclude Include="deps\stb_image.h" />
+    <ClInclude Include="deps\stb_image_write.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="Link.h" />
     <ClInclude Include="node.h" />

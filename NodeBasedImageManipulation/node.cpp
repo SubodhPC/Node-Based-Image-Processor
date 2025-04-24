@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 #include <algorithm>
 #include "node.h"
 #include "imgui_impl_glfw.h"
@@ -7,7 +8,9 @@
 #include "Link.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
+#include "stb_image_write.h"
 
 static void HelpMarker(const char* desc)
 {
@@ -84,6 +87,45 @@ bool LoadTextureFromFile(const char* file_name, ImageBuffer*& buffer)
     bool ret = LoadTextureFromMemory(file_data, file_size, buffer);
     IM_FREE(file_data);
     return ret;
+}
+
+std::string OpenFileDialog() {
+    OPENFILENAMEA ofn;
+    CHAR szFile[260] = { 0 };
+    ZeroMemory(&ofn, sizeof(ofn));
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL; // or your main window handle
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile);
+    ofn.lpstrFilter = "Image Files\0*.png;*.jpg;*.jpeg;*.bmp\0";
+    ofn.nFilterIndex = 1;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    if (GetOpenFileNameA(&ofn)) {
+        return std::string(ofn.lpstrFile);
+    }
+    return "";
+}
+
+std::string SaveFileDialog(const char* defaultExt = "png") {
+    char szFile[MAX_PATH] = { 0 };
+
+    OPENFILENAMEA ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.lpstrFilter = "PNG Files\0*.png\0JPEG Files\0*.jpg;*.jpeg\0Bitmap Files\0*.bmp";
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile);
+    ofn.lpstrDefExt = defaultExt;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+    ofn.lpstrTitle = "Save Image As";
+
+    if (GetSaveFileNameA(&ofn)) {
+        return std::string(ofn.lpstrFile);
+    }
+
+    return "";
 }
 
 ImageBuffer* CreateBuffer(const string& path)
@@ -211,7 +253,11 @@ void InputNode::CreateImNode()
         MarkDirty();
     }
 
-    ImGui::Button("Open File");
+    if (ImGui::Button("Open File"))
+    {
+        filePath = OpenFileDialog();
+        MarkDirty();
+    }
 
     for (Channel* c : outputs)
     {
@@ -273,14 +319,28 @@ void OutputNode::CreateImNode()
     ImGui::Combo("Extension", &selectedExt, availableExt, IM_ARRAYSIZE(availableExt));
 
     ImGui::Spacing();
-    ImGui::Button("Save File");
-
+    if (ImGui::Button("Save File"))
+    {
+        saveFilePath = SaveFileDialog();
+        saveFileExt = saveFilePath.substr(saveFilePath.find_last_of('.'));
+        MarkDirty();
+        Evaluate();
+    }
     ImNodes::EndNode();
 }
 
 bool OutputNode::Evaluate()
 {
     if (!IsDirty()) return false;
+    if (saveFilePath == "")
+        return false;
+    if (saveFileExt == ".png")
+        stbi_write_png(saveFilePath.c_str(), GetImageBuffer()->width, GetImageBuffer()->height, 4, GetImageBuffer()->imageData, GetImageBuffer()->width * 4);
+    if (saveFileExt == ".jpg")
+        stbi_write_jpg(saveFilePath.c_str(), GetImageBuffer()->width, GetImageBuffer()->height, 4, GetImageBuffer()->imageData, GetImageBuffer()->width * 4);
+    if (saveFileExt == ".bmp")
+        stbi_write_bmp(saveFilePath.c_str(), GetImageBuffer()->width, GetImageBuffer()->height, 4, GetImageBuffer()->imageData);
+
     MarkClean();
     return false;
 }
@@ -319,7 +379,13 @@ void BrightnessContrastNode::CreateImNode()
     ImGui::SameLine();
     ImGui::PushID("Reset Brightness");
     if (ImGui::Button(".."))
-        brightness = 0.0f;
+    {
+        if (brightness != 0.0f)
+        {
+            brightness = 0.0f;
+            MarkDirty();
+        }
+    }
     ImGui::PopID();
 
     ImGui::SameLine();
@@ -334,7 +400,13 @@ void BrightnessContrastNode::CreateImNode()
     ImGui::SameLine();
     ImGui::PushID("Reset Contrast");
     if (ImGui::Button(".."))
-        contrast = 1.0f;
+    {
+        if (contrast != 1.0f)
+        {
+            contrast = 1.0f;
+            MarkDirty();
+        }
+    }
     ImGui::PopID();
 
     ImGui::SameLine();
@@ -637,7 +709,13 @@ void BlurNode::CreateImNode()
     ImGui::SameLine();
     ImGui::PushID("Reset Blur Radius");
     if (ImGui::Button(".."))
-        blurRadius = 0.0f;
+    {
+        if (blurRadius != 0.0f)
+        {
+            blurRadius = 0.0f;
+            MarkDirty();
+        }
+    }
     ImGui::PopID();
 
     ImGui::SameLine();
@@ -819,7 +897,14 @@ void ThresholdNode::CreateImNode()
     ImGui::SameLine();
     ImGui::PushID("Reset Threshold");
     if (ImGui::Button(".."))
+    {
         thresholdValue = 128;
+        if (thresholdValue != 128)
+        {
+            thresholdValue = 128;
+            MarkDirty();
+        }
+    }
     ImGui::PopID();
 
     ImGui::SameLine();

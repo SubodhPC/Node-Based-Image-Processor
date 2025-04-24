@@ -101,6 +101,8 @@ public:
 
 class OutputNode : public Node
 {
+	string saveFilePath = "";
+	string saveFileExt = "";
 	const char* availableExt[3] = { ".png", ".jpg", ".bmp" };
 	int selectedExt = 0;
 public:
