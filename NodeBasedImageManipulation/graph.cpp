@@ -1,6 +1,22 @@
 #include "Graph.h"
 #include <queue>
 
+void Graph::InitiateLinks()
+{
+    for (Link* link : links)
+    {
+        ImNodes::Link(link->id, link->from_channel->id, link->to_channel->id);
+    }
+}
+
+void Graph::CreateNodesOnCanvas()
+{
+    for (Node* node : nodes)
+    {
+        node->CreateImNode();
+    }
+}
+
 void Graph::TopoSort(vector<Node*>& nodes)
 {
     std::unordered_map<Node*, int> indegree;

@@ -120,17 +120,9 @@ int main()
             ImGui::Begin("simple node editor");
             ImNodes::BeginNodeEditor();
 
-            graph.InitiateLinks();
-
             // Creates all nodes on the canvas
-            for (Node* node : graph.nodes)
-            {
-                node->CreateImNode();
-            }
-            for (Link* link : graph.links)
-            {
-                ImNodes::Link(link->id, link->from_channel->id, link->to_channel->id);
-            }
+            graph.CreateNodesOnCanvas();
+            graph.InitiateLinks();
 
             ImNodes::EndNodeEditor();
             {

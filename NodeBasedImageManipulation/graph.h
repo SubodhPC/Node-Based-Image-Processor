@@ -19,7 +19,8 @@ public:
     { 
         nodes.push_back(node); 
     }
-    void InitiateLinks() {};
+    void InitiateLinks();
+    void CreateNodesOnCanvas();
     void TopoSort(vector<Node*>& nodes);
     bool WouldCreateCycle(Node* from, Node* to);
     bool Connect(int from, int to);
