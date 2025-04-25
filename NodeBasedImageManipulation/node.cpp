@@ -315,9 +315,6 @@ void OutputNode::CreateImNode()
         ImNodes::EndInputAttribute();
     }
 
-    ImGui::SetNextItemWidth(70);
-    ImGui::Combo("Extension", &selectedExt, availableExt, IM_ARRAYSIZE(availableExt));
-
     ImGui::Spacing();
     if (ImGui::Button("Save File"))
     {

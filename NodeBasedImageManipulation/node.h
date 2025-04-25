@@ -68,10 +68,8 @@ enum class NodeType
 class Node
 {
 	bool dirty = false;
-	string name = "";
 public: 
 	unsigned int id = 0;
-	//Node* prev, * next;
 	NodeType type;
 	vector<Channel*> inputs;
 	vector<Channel*> outputs;
@@ -81,6 +79,7 @@ public:
 	virtual void CreateImNode() = 0;
 	virtual bool Evaluate() = 0;
 	virtual ImageBuffer* GetImageBuffer() = 0;
+
 	void MarkDirty();
 	void MarkClean() { dirty = false; }
 	bool IsDirty() { return dirty; }
@@ -156,11 +155,7 @@ private:
 
 class ThresholdNode : public Node
 {
-	enum class ThresholdMethod {
-		Binary,
-		Adaptive,
-		Otsu
-	};
+	enum class ThresholdMethod { Binary, Adaptive, Otsu	};
 	ThresholdMethod thresholdMethod = ThresholdMethod::Binary;
 	int thresholdValue = 128;
 public:
