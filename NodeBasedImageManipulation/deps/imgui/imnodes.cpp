@@ -725,7 +725,7 @@ void BeginCanvasInteraction(ImNodesEditorContext& editor)
         return;
     }
 
-    const bool started_panning = GImNodes->AltMouseClicked;
+    const bool started_panning = GImNodes->RightMouseClicked;
 
     if (started_panning)
     {
@@ -1091,7 +1091,7 @@ void ClickInteractionUpdate(ImNodesEditorContext& editor)
     break;
     case ImNodesClickInteractionType_Panning:
     {
-        const bool dragging = GImNodes->AltMouseDragging;
+        const bool dragging = GImNodes->RightMouseDragging;
 
         if (dragging)
         {
@@ -2224,6 +2224,9 @@ void BeginNodeEditor()
     GImNodes->LeftMouseClicked = ImGui::IsMouseClicked(0);
     GImNodes->LeftMouseReleased = ImGui::IsMouseReleased(0);
     GImNodes->LeftMouseDragging = ImGui::IsMouseDragging(0, 0.0f);
+    GImNodes->RightMouseClicked = ImGui::IsMouseClicked(1);
+    GImNodes->RightMouseReleased = ImGui::IsMouseReleased(1);
+    GImNodes->RightMouseDragging = ImGui::IsMouseDragging(1, 0.0f);
     GImNodes->AltMouseClicked =
         (GImNodes->Io.EmulateThreeButtonMouse.Modifier != NULL &&
          *GImNodes->Io.EmulateThreeButtonMouse.Modifier && GImNodes->LeftMouseClicked) ||
@@ -2375,7 +2378,7 @@ void EndNodeEditor()
         }
 
         else if (
-            GImNodes->LeftMouseClicked || GImNodes->LeftMouseReleased ||
+            GImNodes->LeftMouseClicked || GImNodes->RightMouseClicked || GImNodes->LeftMouseReleased ||
             GImNodes->AltMouseClicked || GImNodes->AltMouseScrollDelta != 0.f)
         {
             BeginCanvasInteraction(editor);

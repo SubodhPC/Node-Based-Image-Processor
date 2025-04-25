@@ -346,8 +346,11 @@ struct ImNodesContext
 
     bool  LeftMouseClicked;
     bool  LeftMouseReleased;
+    bool  RightMouseClicked;
+    bool  RightMouseReleased;
     bool  AltMouseClicked;
     bool  LeftMouseDragging;
+    bool  RightMouseDragging;
     bool  AltMouseDragging;
     float AltMouseScrollDelta;
     bool  MultipleSelectModifier;
