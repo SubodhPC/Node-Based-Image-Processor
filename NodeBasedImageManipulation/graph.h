@@ -35,6 +35,9 @@ public:
     void DeleteLinks(vector<int>& linkIDs);
     void PropagateData(Node* node);
     bool Evaluate();
+    vector<int> GetSelectedNodes();
+    vector<int> GetSelectedLinks();
+    void ShowProperties();
     void SetChanged(bool changed) { m_changed = changed; }
     bool IsChanged() { return m_changed; }
     Node* GetNodeFromChannelID(int channelId, Channel*& channel);

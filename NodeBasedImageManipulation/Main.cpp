@@ -111,13 +111,11 @@ int main()
 
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport());
 
-        {
-            graph.Evaluate();
-        }
+        graph.Evaluate();
 
         // 1. Node Canvas
         {
-            ImGui::Begin("simple node editor");
+            ImGui::Begin("Canvas");
             ImNodes::BeginNodeEditor();
 
             // Creates all nodes on the canvas
@@ -188,41 +186,16 @@ int main()
 
         // 3. This will become the property window.
         {
-            static float f = 0.0f;
-            static int counter = 0;
+            ImGui::Begin("Properties");                          // Create a window called "Hello, world!" and append into it.
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            graph.ShowProperties();
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
         }
 
-        int nSelNodes = ImNodes::NumSelectedNodes();
-        vector<int> selectedNodeIds;
-        if (nSelNodes)
-        {
-            selectedNodeIds.resize(ImNodes::NumSelectedNodes());
-            ImNodes::GetSelectedNodes(&selectedNodeIds[0]);
-        }
-
-        int nSelLinks = ImNodes::NumSelectedLinks();
-        vector<int> selectedLinkIds;
-        if (nSelLinks)
-        {
-            selectedLinkIds.resize(ImNodes::NumSelectedLinks());
-            ImNodes::GetSelectedLinks(&selectedLinkIds[0]);
-        }
+        vector<int> selectedNodeIds = graph.GetSelectedNodes();
+        vector<int> selectedLinkIds = graph.GetSelectedLinks();
+ 
 
         // Either delete the selections or show an image
         if (ImGui::IsKeyPressed(ImGuiKey_Delete))
@@ -233,18 +206,19 @@ int main()
         else
         {
             // 4. Show an image
-            if (nSelNodes)
+            if (selectedNodeIds.size())
             {
                 Node* selectedNode = graph.GetNodeFromId(selectedNodeIds[0]);
                 if (selectedNode)
                     buffer = selectedNode->GetImageBuffer();
             }
-            else if (nSelLinks)
+            else if (selectedLinkIds.size())
             {
                 Link* selectedLink = graph.GetLinkFromId(selectedLinkIds[0]);
                 if (selectedLink)
                     buffer = (ImageBuffer*)selectedLink->GetPropogatedData();
             }
+
             ImGui::Begin("Image Preview");
 
             if (buffer)

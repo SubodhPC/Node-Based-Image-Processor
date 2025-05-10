@@ -211,6 +211,40 @@ bool Graph::Evaluate()
     return true;;
 }
 
+vector<int> Graph::GetSelectedNodes()
+{
+    int nSelNodes = ImNodes::NumSelectedNodes();
+    vector<int> selectedNodeIds;
+    if (nSelNodes)
+    {
+        selectedNodeIds.resize(nSelNodes);
+        ImNodes::GetSelectedNodes(&selectedNodeIds[0]);
+    }
+    return selectedNodeIds;
+}
+
+vector<int> Graph::GetSelectedLinks()
+{
+    int nSelLinks = ImNodes::NumSelectedLinks();
+    vector<int> selectedLinkIds;
+    if (nSelLinks)
+    {
+        selectedLinkIds.resize(nSelLinks);
+        ImNodes::GetSelectedLinks(&selectedLinkIds[0]);
+    }
+    return selectedLinkIds;
+}
+
+void Graph::ShowProperties()
+{
+    vector<int> nodeIds = GetSelectedNodes();
+    if (!nodeIds.size())
+        return;
+    Node* node = GetNodeFromId(nodeIds[0]);
+    if (node)
+        node->CreateImNodeProperties();
+}
+
 Node* Graph::GetNodeFromChannelID(int channelId, Channel*& channel)
 {
     for (Node* node : nodes) {

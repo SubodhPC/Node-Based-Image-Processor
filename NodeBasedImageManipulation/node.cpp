@@ -226,8 +226,6 @@ static int InputTextCallback(ImGuiInputTextCallbackData* data)
 
 void InputNode::CreateImNode()
 {
-    static float value = 0.0f;
-
     ImNodes::BeginNode(id);
 
     ImNodes::BeginNodeTitleBar();
@@ -268,6 +266,41 @@ void InputNode::CreateImNode()
     }
 
     ImNodes::EndNode();
+}
+
+void InputNode::CreateImNodeProperties()
+{
+    int width = 0, height = 0;
+    if (outputs[0]->data)
+    {
+        auto buffer = (ImageBuffer*)(outputs[0]->data);
+        width = buffer->width;
+        height = buffer->height;
+    }
+    ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV;
+    if (ImGui::BeginTable("table3", 2, flags))
+    {
+        ImGui::TableNextColumn();
+        ImGui::Text("File Path");
+        ImGui::TableNextColumn();
+        ImGui::Text(filePath.c_str());
+        ImGui::TableNextColumn();
+        ImGui::Text("File Extention");
+        ImGui::TableNextColumn();
+        ImGui::Text(fileExt.c_str());
+        ImGui::TableNextColumn();
+        ImGui::Text("Width");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", width);
+        ImGui::TableNextColumn();
+        ImGui::Text("Height");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", height);
+
+        ImGui::EndTable();
+    }
+    ImGui::PushItemWidth(100);
+    ImGui::PopItemWidth();
 }
 
 bool InputNode::Evaluate()
@@ -324,6 +357,10 @@ void OutputNode::CreateImNode()
         Evaluate();
     }
     ImNodes::EndNode();
+}
+
+void OutputNode::CreateImNodeProperties()
+{
 }
 
 bool OutputNode::Evaluate()
@@ -422,6 +459,10 @@ void BrightnessContrastNode::CreateImNode()
     }
 
     ImNodes::EndNode();
+}
+
+void BrightnessContrastNode::CreateImNodeProperties()
+{
 }
 
 
@@ -561,6 +602,10 @@ void ColorChannelSplitterNode::CreateImNode()
     }
 
     ImNodes::EndNode();
+}
+
+void ColorChannelSplitterNode::CreateImNodeProperties()
+{
 }
 
 bool ColorChannelSplitterNode::Evaluate()
@@ -731,6 +776,10 @@ void BlurNode::CreateImNode()
     }
 
     ImNodes::EndNode();
+}
+
+void BlurNode::CreateImNodeProperties()
+{
 }
 
 bool BlurNode::Evaluate()
@@ -932,6 +981,10 @@ void ThresholdNode::CreateImNode()
     ImGui::PlotHistogram("", histogram, 256, 0, nullptr, 0.0f, maxValue, ImVec2(0, 80.0f));
     ImGui::PopID();
     ImNodes::EndNode();
+}
+
+void ThresholdNode::CreateImNodeProperties()
+{
 }
 
 bool ThresholdNode::Evaluate()

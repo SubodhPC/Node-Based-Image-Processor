@@ -77,6 +77,7 @@ public:
 	virtual ~Node();
 	virtual string GetName() = 0;
 	virtual void CreateImNode() = 0;
+	virtual void CreateImNodeProperties() = 0;
 	virtual bool Evaluate() = 0;
 	virtual ImageBuffer* GetImageBuffer() = 0;
 
@@ -93,6 +94,7 @@ class InputNode : public Node
 public:
 	InputNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Input"; }
 	ImageBuffer* GetImageBuffer() override;
@@ -107,6 +109,7 @@ class OutputNode : public Node
 public:
 	OutputNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Output"; }
 	ImageBuffer* GetImageBuffer() override;
@@ -119,6 +122,7 @@ class BrightnessContrastNode : public Node
 public:
 	BrightnessContrastNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Brightness & Contrast"; }
 	ImageBuffer* GetImageBuffer() override;
@@ -132,6 +136,7 @@ class ColorChannelSplitterNode : public Node
 public:
 	ColorChannelSplitterNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Color Splitter"; }
 	ImageBuffer* GetImageBuffer() override;
@@ -145,6 +150,7 @@ class BlurNode : public Node
 public:
 	BlurNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Blur"; }
 	ImageBuffer* GetImageBuffer() override;
@@ -161,6 +167,7 @@ class ThresholdNode : public Node
 public:
 	ThresholdNode(int id);
 	void CreateImNode() override;
+	void CreateImNodeProperties() override;
 	bool Evaluate() override;
 	string GetName() override { return "Blur"; }
 	ImageBuffer* GetImageBuffer() override;
