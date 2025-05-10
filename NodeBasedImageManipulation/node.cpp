@@ -361,6 +361,29 @@ void OutputNode::CreateImNode()
 
 void OutputNode::CreateImNodeProperties()
 {
+    int width = 0, height = 0;
+    if (outputs[0]->data)
+    {
+        auto buffer = (ImageBuffer*)(outputs[0]->data);
+        width = buffer->width;
+        height = buffer->height;
+    }
+    ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV;
+    if (ImGui::BeginTable("table3", 2, flags))
+    {
+        ImGui::TableNextColumn();
+        ImGui::Text("Width");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", width);
+        ImGui::TableNextColumn();
+        ImGui::Text("Height");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", height);
+
+        ImGui::EndTable();
+    }
+    ImGui::PushItemWidth(100);
+    ImGui::PopItemWidth();
 }
 
 bool OutputNode::Evaluate()
@@ -463,6 +486,49 @@ void BrightnessContrastNode::CreateImNode()
 
 void BrightnessContrastNode::CreateImNodeProperties()
 {
+    int width = 0, height = 0;
+    if (outputs[0]->data)
+    {
+        auto buffer = (ImageBuffer*)(outputs[0]->data);
+        width = buffer->width;
+        height = buffer->height;
+    }
+    ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV;
+    if (ImGui::BeginTable("table3", 2, flags))
+    {
+        ImGui::TableNextColumn();
+        ImGui::Text("Brightness");
+        ImGui::TableNextColumn();
+
+        ImGui::PushItemWidth(0.0);
+        ImGui::PushID("propBrightness");
+        if (ImGui::SliderFloat("", &brightness, -100.0f, 100.0f, "%.3f"))
+        {
+            MarkDirty();
+        }
+        ImGui::PopID();
+        ImGui::TableNextColumn();
+        ImGui::Text("Contrast");
+        ImGui::TableNextColumn();
+
+        ImGui::PushItemWidth(0.0);
+        ImGui::PushID("propContrast");
+        if (ImGui::SliderFloat("", &contrast, 0.0f, 3.0f, "%.3f"))
+        {
+            MarkDirty();
+        }
+        ImGui::PopID();
+        ImGui::TableNextColumn();
+        ImGui::Text("Width");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", width);
+        ImGui::TableNextColumn();
+        ImGui::Text("Height");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", height);
+
+        ImGui::EndTable();
+    }
 }
 
 
@@ -606,6 +672,38 @@ void ColorChannelSplitterNode::CreateImNode()
 
 void ColorChannelSplitterNode::CreateImNodeProperties()
 {
+    int width = 0, height = 0;
+    if (outputs[0]->data)
+    {
+        auto buffer = (ImageBuffer*)(outputs[0]->data);
+        width = buffer->width;
+        height = buffer->height;
+    }
+    ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV;
+    if (ImGui::BeginTable("table3", 2, flags))
+    {
+        for (size_t i = 0; i < outputs.size(); i++)
+        {
+            ImGui::TableNextColumn();
+            ImGui::Text(greyFlagNames[i].c_str());
+
+            ImGui::TableNextColumn();
+            ImGui::PushID(greyFlagNames[i].c_str());
+            if (ImGui::Checkbox("", &greyFlags[i]))
+                MarkDirty();
+            ImGui::PopID();
+        }
+        ImGui::TableNextColumn();
+        ImGui::Text("Width");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", width);
+        ImGui::TableNextColumn();
+        ImGui::Text("Height");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", height);
+
+        ImGui::EndTable();
+    }
 }
 
 bool ColorChannelSplitterNode::Evaluate()
@@ -780,6 +878,38 @@ void BlurNode::CreateImNode()
 
 void BlurNode::CreateImNodeProperties()
 {
+    int width = 0, height = 0;
+    if (outputs[0]->data)
+    {
+        auto buffer = (ImageBuffer*)(outputs[0]->data);
+        width = buffer->width;
+        height = buffer->height;
+    }
+    ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV;
+    if (ImGui::BeginTable("table3", 2, flags))
+    {
+        ImGui::TableNextColumn();
+        ImGui::Text("Blur Radius");
+        ImGui::TableNextColumn();
+
+        ImGui::PushItemWidth(0.0);
+        ImGui::PushID("propBlurRadius");
+        if (ImGui::SliderInt("", &blurRadius, 0, 20))
+        {
+            MarkDirty();
+        }
+        ImGui::PopID();
+        ImGui::TableNextColumn();
+        ImGui::Text("Width");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", width);
+        ImGui::TableNextColumn();
+        ImGui::Text("Height");
+        ImGui::TableNextColumn();
+        ImGui::Text("%d", height);
+
+        ImGui::EndTable();
+    }
 }
 
 bool BlurNode::Evaluate()
