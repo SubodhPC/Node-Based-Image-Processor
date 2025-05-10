@@ -176,11 +176,11 @@ int main()
                 BlurNode* inputN = new BlurNode(graph.GetNewId());
                 graph.AddNode(inputN);
             }
-            if (ImGui::Button("Threshold")) // Buttons return true when clicked (most widgets return true when edited/activated)
-            {
+            //if (ImGui::Button("Threshold")) // Buttons return true when clicked (most widgets return true when edited/activated)
+            //{
                 //ThresholdNode* inputN = new ThresholdNode(graph.GetNewId());
                 //graph.AddNode(inputN);
-            }
+            //}
             ImGui::End();
         }
 
