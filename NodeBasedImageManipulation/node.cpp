@@ -89,6 +89,14 @@ bool LoadTextureFromFile(const char* file_name, ImageBuffer*& buffer)
     return ret;
 }
 
+template<typename T>
+T Clamp(T val, T lo, T hi)
+{
+    if (val < lo || val > hi)
+        val = abs(val - lo) <= abs(val - hi) ? lo : hi;
+    return val;
+}
+
 std::string OpenFileDialog() {
     OPENFILENAMEA ofn;
     CHAR szFile[260] = { 0 };
@@ -362,7 +370,7 @@ void OutputNode::CreateImNode()
 void OutputNode::CreateImNodeProperties()
 {
     int width = 0, height = 0;
-    if (outputs[0]->data)
+    if (outputs.size() && outputs[0]->data)
     {
         auto buffer = (ImageBuffer*)(outputs[0]->data);
         width = buffer->width;
@@ -404,7 +412,7 @@ bool OutputNode::Evaluate()
 
 ImageBuffer* OutputNode::GetImageBuffer()
 {
-    if (inputs[0]->data == nullptr)
+    if (!inputs.size() || inputs[0]->data == nullptr)
         return nullptr;
 
     return static_cast<ImageBuffer*>(inputs[0]->data);
@@ -599,9 +607,12 @@ bool BrightnessContrastNode::Evaluate()
             color /= 255.0f;
             color = (color - 0.5f) * contrast + 0.5f;
             color *= 255.0f;
+
+            auto color2 = Clamp(color, 0.0f, 255.0f);
             if (color < 0 || color > 255)
                 color = abs(color - 0.0f) <= abs(color - 255.0f) ? 0.0f : 255.0f;
 
+            assert(color == color2);
             editedData[index + c] = (unsigned char)color;
         }
     }
@@ -1021,8 +1032,8 @@ void BlurNode::ApplyGaussianBlur(
 
             for (int i = -blurRadius; i <= blurRadius; ++i)
             {
-                int sampleX = horizontal ? std::clamp(x + i, 0, width - 1) : x;
-                int sampleY = horizontal ? y : std::clamp(y + i, 0, height - 1);
+                int sampleX = horizontal ? Clamp(x + i, 0, width - 1) : x;
+                int sampleY = horizontal ? y : Clamp(y + i, 0, height - 1);
 
                 int sampleIndex = (sampleY * width + sampleX) * 4;
                 float weight = kernel[i + blurRadius];
@@ -1033,7 +1044,7 @@ void BlurNode::ApplyGaussianBlur(
 
             int outIndex = (y * width + x) * 4;
             for (int c = 0; c < 4; ++c)
-                output[outIndex + c] = static_cast<unsigned char>(std::clamp(sum[c], 0.0f, 255.0f));
+                output[outIndex + c] = static_cast<unsigned char>(Clamp(sum[c], 0.0f, 255.0f));
         }
     }
 }
