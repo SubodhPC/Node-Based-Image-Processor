@@ -947,17 +947,6 @@ bool BlurNode::Evaluate()
     int width = inputBuffer->width;
     int height = inputBuffer->height;
 
-    unsigned char* blurImageData = new unsigned char[width * height * 4];
-    if (direction == BlurDirection::Uniform) {
-        unsigned char* temp = new unsigned char[width * height * 4];
-        ApplyGaussianBlur(inputBuffer->imageData, temp, width, height, true);  // H
-        ApplyGaussianBlur(temp, blurImageData, width, height, false); // V
-    }
-    else {
-        bool horiz = direction == BlurDirection::Horizontal;
-        ApplyGaussianBlur(inputBuffer->imageData, blurImageData, width, height, horiz);  // H
-    }
-
     bool newBuffer = false;
     ImageBuffer* outbuffer = static_cast<ImageBuffer*>(outputs[0]->data);
     if (!outbuffer)
@@ -975,11 +964,27 @@ bool BlurNode::Evaluate()
         outbuffer->width = width;
         outbuffer->height = height;
     }
-    
-    if (outbuffer->imageData)
-        delete[] outbuffer->imageData;
 
-    outbuffer->imageData = blurImageData;
+    if (!outbuffer->imageData)
+        outbuffer->imageData = new unsigned char[width * height * 4];
+
+    unsigned char* blurImageData = outbuffer->imageData;
+    if (blurRadius == 0)
+    {
+		memcpy(blurImageData, inputBuffer->imageData, width * height * 4);
+    }
+    else if (direction == BlurDirection::Uniform) {
+        vector<unsigned char> tempVec(width * height * 4);
+        unsigned char* temp = tempVec.data();
+        ApplyGaussianBlur(inputBuffer->imageData, temp, width, height, true);  // H
+        ApplyGaussianBlur(temp, blurImageData, width, height, false); // V
+    }
+    else 
+    {
+        bool horiz = direction == BlurDirection::Horizontal;
+        ApplyGaussianBlur(inputBuffer->imageData, blurImageData, width, height, horiz);  // H
+    }
+
     if (newBuffer)
         UploadTextureToOpenGL(width, height, outbuffer->texture, blurImageData, !newBuffer);
 
