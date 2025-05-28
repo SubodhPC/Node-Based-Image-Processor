@@ -903,10 +903,11 @@ void BlurNode::CreateImNodeProperties()
         ImGui::Text("Blur Radius");
         ImGui::TableNextColumn();
 
-        ImGui::PushItemWidth(0.0);
+        ImGui::PushItemWidth(-FLT_MIN);
         ImGui::PushID("propBlurRadius");
         if (ImGui::SliderInt("", &blurRadius, 0, 20))
         {
+            blurRadiusChanged = true;
             MarkDirty();
         }
         ImGui::PopID();
@@ -1026,7 +1027,13 @@ void BlurNode::ApplyGaussianBlur(
     int height,
     bool horizontal)
 {
-    std::vector<float> kernel = GenerateGaussianKernel(blurRadius);
+    if (blurRadiusChanged) 
+    {
+        gaussianKernel = GenerateGaussianKernel(blurRadius);
+		blurRadiusChanged = false;
+    }
+
+    std::vector<float>& kernel = gaussianKernel;
     int kernelSize = static_cast<int>(kernel.size());
 
     for (int y = 0; y < height; ++y)

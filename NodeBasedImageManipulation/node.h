@@ -147,6 +147,8 @@ class BlurNode : public Node
 	enum class BlurDirection { Uniform, Horizontal, Vertical };
 	BlurDirection direction = BlurDirection::Uniform;
 	int blurRadius = 0;
+	bool blurRadiusChanged = false;
+	vector<float> gaussianKernel;
 public:
 	BlurNode(int id);
 	void CreateImNode() override;
