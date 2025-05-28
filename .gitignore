@@ -32,6 +32,6 @@
 *.app
 
 # Visual Studio
-/.vs/NodeBasedImageManipulation
+/.vs
 /NodeBasedImageManipulation/x64/Debug
 /x64/Debug
