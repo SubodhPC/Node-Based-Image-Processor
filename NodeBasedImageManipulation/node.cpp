@@ -905,8 +905,9 @@ void BlurNode::CreateImNodeProperties()
 
         ImGui::PushItemWidth(-FLT_MIN);
         ImGui::PushID("propBlurRadius");
-        if (ImGui::SliderInt("", &blurRadius, 0, 20))
+        if (ImGui::SliderInt("", &blurSliderValue, 0, 20))
         {
+            blurRadius = blurSliderValue;
             blurRadiusChanged = true;
             MarkDirty();
         }
