@@ -217,7 +217,7 @@ void Node::MarkDirty()
 InputNode::InputNode(int id)
 {
     this->id = id;
-    outputs.push_back(new Channel(id + 1, "Image", ChannelType::Output, ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
 };
 
 static int InputTextCallback(ImGuiInputTextCallbackData* data)
@@ -338,7 +338,7 @@ ImageBuffer* InputNode::GetImageBuffer()
 OutputNode::OutputNode(int id)
 {
     this->id = id;
-    inputs.push_back(new Channel(id + 1, "Image", ChannelType::Input, ChannelDataType::Image));
+    inputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Input, Channel::ChannelDataType::Image));
 };
 
 void OutputNode::CreateImNode()
@@ -420,8 +420,8 @@ ImageBuffer* OutputNode::GetImageBuffer()
 BrightnessContrastNode::BrightnessContrastNode(int id)
 {
     this->id = id;
-    inputs.push_back(new Channel(id + 1, "Image", ChannelType::Input, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 2, "Image", ChannelType::Output, ChannelDataType::Image));
+    inputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Input, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 2, "Image", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
 };
 
 void BrightnessContrastNode::CreateImNode()
@@ -507,7 +507,7 @@ void BrightnessContrastNode::CreateImNodeProperties()
         ImGui::Text("Brightness");
         ImGui::TableNextColumn();
 
-        ImGui::PushItemWidth(0.0);
+        ImGui::PushItemWidth(-FLT_MIN);
         ImGui::PushID("propBrightness");
         if (ImGui::SliderFloat("", &brightness, -100.0f, 100.0f, "%.3f"))
         {
@@ -518,7 +518,7 @@ void BrightnessContrastNode::CreateImNodeProperties()
         ImGui::Text("Contrast");
         ImGui::TableNextColumn();
 
-        ImGui::PushItemWidth(0.0);
+        ImGui::PushItemWidth(-FLT_MIN);
         ImGui::PushID("propContrast");
         if (ImGui::SliderFloat("", &contrast, 0.0f, 3.0f, "%.3f"))
         {
@@ -550,7 +550,7 @@ bool BrightnessContrastNode::Evaluate()
         Channel* outChannel = outputs[0];
         if (outChannel->data != nullptr)
         {
-            if (outChannel->type == ChannelType::Output && outChannel->dataType == ChannelDataType::Image)
+            if (outChannel->type == Channel::ChannelType::Output && outChannel->dataType == Channel::ChannelDataType::Image)
                 delete (ImageBuffer*)outChannel->data;
             outChannel->data = nullptr;
         }
@@ -636,11 +636,11 @@ ImageBuffer* BrightnessContrastNode::GetImageBuffer()
 ColorChannelSplitterNode::ColorChannelSplitterNode(int id)
 {
     this->id = id;
-    inputs.push_back(new Channel(id + 1, "Image", ChannelType::Input, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 2, "Red", ChannelType::Output, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 3, "Green", ChannelType::Output, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 4, "Blue", ChannelType::Output, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 5, "Alpha", ChannelType::Output, ChannelDataType::Image));
+    inputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Input, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 2, "Red", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 3, "Green", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 4, "Blue", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 5, "Alpha", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
 }
 
 void ColorChannelSplitterNode::CreateImNode()
@@ -728,7 +728,7 @@ bool ColorChannelSplitterNode::Evaluate()
         {
             if (outChannel->data != nullptr)
             {
-                if (outChannel->dataType == ChannelDataType::Image)
+                if (outChannel->dataType == Channel::ChannelDataType::Image)
                     delete (ImageBuffer*)outChannel->data;
                 outChannel->data = nullptr;
             }
@@ -827,8 +827,8 @@ ImageBuffer* ColorChannelSplitterNode::GetImageBuffer()
 BlurNode::BlurNode(int id)
 {
     this->id = id;
-    inputs.push_back(new Channel(id + 1, "Image", ChannelType::Input, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 2, "Blurred", ChannelType::Output, ChannelDataType::Image));
+    inputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Input, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 2, "Blurred", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
 }
 
 void BlurNode::CreateImNode()
@@ -936,7 +936,7 @@ bool BlurNode::Evaluate()
         {
             if (outChannel->data != nullptr)
             {
-                if (outChannel->dataType == ChannelDataType::Image)
+                if (outChannel->dataType == Channel::ChannelDataType::Image)
                     delete (ImageBuffer*)outChannel->data;
                 outChannel->data = nullptr;
             }
@@ -1064,8 +1064,8 @@ void BlurNode::ApplyGaussianBlur(
 ThresholdNode::ThresholdNode(int id)
 {
     this->id = id;
-    inputs.push_back(new Channel(id + 1, "Image", ChannelType::Input, ChannelDataType::Image));
-    outputs.push_back(new Channel(id + 2, "Image", ChannelType::Output, ChannelDataType::Image));
+    inputs.push_back(new Channel(id + 1, "Image", Channel::ChannelType::Input, Channel::ChannelDataType::Image));
+    outputs.push_back(new Channel(id + 2, "Image", Channel::ChannelType::Output, Channel::ChannelDataType::Image));
 }
 
 void ThresholdNode::CreateImNode()
@@ -1152,7 +1152,7 @@ bool ThresholdNode::Evaluate()
         {
             if (outChannel->data != nullptr)
             {
-                if (outChannel->dataType == ChannelDataType::Image)
+                if (outChannel->dataType == Channel::ChannelDataType::Image)
                     delete (ImageBuffer*)outChannel->data;
                 outChannel->data = nullptr;
             }

@@ -23,16 +23,16 @@ public:
 	~ImageBuffer();
 };
 
-enum class ChannelType
-{
-	Input, Output
-};
-enum class ChannelDataType
-{
-	Image
-};
-
 struct Channel {
+	enum class ChannelType
+	{
+		Input, Output
+	};
+	enum class ChannelDataType
+	{
+		Image
+	};
+
 	int id;
 	std::string name;
 	ChannelType type;
