@@ -4,38 +4,37 @@
 #include "node.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <GLFW/glfw3.h> // Will drag system OpenGL headers
 #include "Link.h"
-
+#include "Core/NodeUtils.h"
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-static void HelpMarker(const char* desc)
-{
-    ImGui::TextDisabled("(?)");
-    if (ImGui::BeginItemTooltip())
-    {
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
+//static void HelpMarker(const char* desc)
+//{
+//    ImGui::TextDisabled("(?)");
+//    if (ImGui::BeginItemTooltip())
+//    {
+//        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+//        ImGui::TextUnformatted(desc);
+//        ImGui::PopTextWrapPos();
+//        ImGui::EndTooltip();
+//    }
+//}
 
-void UploadTextureToOpenGL(const int width, const int height, const GLuint texture, unsigned char *& imageData, const bool update = false)
-{
-    glBindTexture(GL_TEXTURE_2D, texture);
-    if (update)
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-    else
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-
-    // Set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
+//void UploadTextureToOpenGL(const int width, const int height, const GLuint texture, unsigned char *& imageData, const bool update = false)
+//{
+//    glBindTexture(GL_TEXTURE_2D, texture);
+//    if (update)
+//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+//    else
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+//
+//    // Set texture filtering parameters
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//}
 
 // Simple helper function to load an image into a OpenGL texture with common settings
 bool LoadTextureFromMemory(const void* data, size_t data_size, ImageBuffer*& buffer)
@@ -89,52 +88,52 @@ bool LoadTextureFromFile(const char* file_name, ImageBuffer*& buffer)
     return ret;
 }
 
-template<typename T>
-T Clamp(T val, T lo, T hi)
-{
-    if (val < lo || val > hi)
-        val = abs(val - lo) <= abs(val - hi) ? lo : hi;
-    return val;
-}
-
-std::string OpenFileDialog() {
-    OPENFILENAMEA ofn;
-    CHAR szFile[260] = { 0 };
-    ZeroMemory(&ofn, sizeof(ofn));
-
-    ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = NULL; // or your main window handle
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = sizeof(szFile);
-    ofn.lpstrFilter = "Image Files\0*.png;*.jpg;*.jpeg;*.bmp\0";
-    ofn.nFilterIndex = 1;
-    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-    if (GetOpenFileNameA(&ofn)) {
-        return std::string(ofn.lpstrFile);
-    }
-    return "";
-}
-
-std::string SaveFileDialog(const char* defaultExt = "png") {
-    char szFile[MAX_PATH] = { 0 };
-
-    OPENFILENAMEA ofn;
-    ZeroMemory(&ofn, sizeof(ofn));
-    ofn.lStructSize = sizeof(ofn);
-    ofn.lpstrFilter = "PNG Files\0*.png\0JPEG Files\0*.jpg;*.jpeg\0Bitmap Files\0*.bmp";
-    ofn.lpstrFile = szFile;
-    ofn.nMaxFile = sizeof(szFile);
-    ofn.lpstrDefExt = defaultExt;
-    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-    ofn.lpstrTitle = "Save Image As";
-
-    if (GetSaveFileNameA(&ofn)) {
-        return std::string(ofn.lpstrFile);
-    }
-
-    return "";
-}
+//template<typename T>
+//T Clamp(T val, T lo, T hi)
+//{
+//    if (val < lo || val > hi)
+//        val = abs(val - lo) <= abs(val - hi) ? lo : hi;
+//    return val;
+//}
+//
+//std::string OpenFileDialog() {
+//    OPENFILENAMEA ofn;
+//    CHAR szFile[260] = { 0 };
+//    ZeroMemory(&ofn, sizeof(ofn));
+//
+//    ofn.lStructSize = sizeof(ofn);
+//    ofn.hwndOwner = NULL; // or your main window handle
+//    ofn.lpstrFile = szFile;
+//    ofn.nMaxFile = sizeof(szFile);
+//    ofn.lpstrFilter = "Image Files\0*.png;*.jpg;*.jpeg;*.bmp\0";
+//    ofn.nFilterIndex = 1;
+//    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+//
+//    if (GetOpenFileNameA(&ofn)) {
+//        return std::string(ofn.lpstrFile);
+//    }
+//    return "";
+//}
+//
+//std::string SaveFileDialog(const char* defaultExt = "png") {
+//    char szFile[MAX_PATH] = { 0 };
+//
+//    OPENFILENAMEA ofn;
+//    ZeroMemory(&ofn, sizeof(ofn));
+//    ofn.lStructSize = sizeof(ofn);
+//    ofn.lpstrFilter = "PNG Files\0*.png\0JPEG Files\0*.jpg;*.jpeg\0Bitmap Files\0*.bmp";
+//    ofn.lpstrFile = szFile;
+//    ofn.nMaxFile = sizeof(szFile);
+//    ofn.lpstrDefExt = defaultExt;
+//    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+//    ofn.lpstrTitle = "Save Image As";
+//
+//    if (GetSaveFileNameA(&ofn)) {
+//        return std::string(ofn.lpstrFile);
+//    }
+//
+//    return "";
+//}
 
 ImageBuffer* CreateBuffer(const string& path)
 {

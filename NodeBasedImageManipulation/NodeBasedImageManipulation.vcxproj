@@ -114,7 +114,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(SolutionDir)NodeBasedImageManipulation\deps\glfw\include;$(SolutionDir)NodeBasedImageManipulation\deps;$(SolutionDir)NodeBasedImageManipulation\deps\imgui;$(SolutionDir)NodeBasedImageManipulation\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NodeBasedImageManipulation\deps\glfw\include;$(SolutionDir)NodeBasedImageManipulation\deps;$(SolutionDir)NodeBasedImageManipulation\deps\imgui;$(SolutionDir)NodeBasedImageManipulation\Core;$(SolutionDir)NodeBasedImageManipulation\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -162,6 +162,7 @@
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="node.cpp" />
+    <ClCompile Include="Core\NodeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deps\imgui\imconfig.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="graph.h" />
     <ClInclude Include="Link.h" />
     <ClInclude Include="node.h" />
+    <ClInclude Include="Core\NodeUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
