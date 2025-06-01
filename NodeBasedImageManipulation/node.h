@@ -5,23 +5,24 @@
 #include <string>
 #include "imnodes.h"
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
+#include "ImageBuffer.h"
 
 using namespace std;
 
-class ImageBuffer 
-{
-public:
-	int width = 0, height = 0;
-	GLuint texture = 0;
-	unsigned char* imageData = nullptr;
-
-	void ShowImage();
-
-	ImageBuffer() {};
-	ImageBuffer(const ImageBuffer&) = delete;
-	ImageBuffer& operator=(const ImageBuffer&) = delete;
-	~ImageBuffer();
-};
+//class ImageBuffer 
+//{
+//public:
+//	int width = 0, height = 0;
+//	GLuint texture = 0;
+//	unsigned char* imageData = nullptr;
+//
+//	void ShowImage();
+//
+//	ImageBuffer() {};
+//	ImageBuffer(const ImageBuffer&) = delete;
+//	ImageBuffer& operator=(const ImageBuffer&) = delete;
+//	~ImageBuffer();
+//};
 
 struct Channel {
 	enum class ChannelType
